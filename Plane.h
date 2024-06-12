@@ -1,3 +1,7 @@
+// Plane.h
+#ifdef PLANE_H
+#define PLANE_H
+
 #include <string>
 
 
@@ -7,10 +11,21 @@ private:
     int maxSpeed;
     int maxMissiles;
     int maxGunRounds;
-    float maxArmor;    
+    float maxArmor;
+    struct speedModifiers
+    {
+        int x;
+        int y;
+    };
+        
 
 public:
+
+
     //Constructor
-    Plane(std::string name, int maxSpeed, int maxMissiles, int maxGunRounds, float maxArmor);
+    Plane(std::string name, int maxSpeed, int maxMissiles, int maxGunRounds, float maxArmor), speedModifiers(speedModifiers);
+
 
 };
+
+#endif // PLANE_H

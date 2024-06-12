@@ -3,21 +3,11 @@
 #include <vector>
 #include <stddef.h>
 #include <stdlib.h>
+#include "functions.h"
+#include <cmath>
+#include "raymath.h"
 
 
-
-void FireProjectile(std::vector<Rectangle>& projectiles, const Rectangle& shooter)
-{
-    Rectangle projectile = { shooter.x + shooter.width / 2 - 5, shooter.y - 10, 10, 10 };
-    projectiles.push_back(projectile);
-}
-
-//create enemy
-void CreateEnemy(std::vector<Rectangle>& rectangles, const float screenWidth, const float screenHeight)
-{
-    Rectangle enemy = { GetRandomValue(0, screenWidth - 50), 0, 50, 50 };
-    rectangles.push_back(enemy);
-}
 
 int main()
 {
@@ -68,7 +58,7 @@ int main()
         DrawRectangleRec(square, GRAY);
 
         //draw score
-        //DrawText(FormatText("Score: %i", score), 10, 10, 20, WHITE);
+        DrawText(TextFormat("Score: %i", score), 10, 10, 20, WHITE);
         
         //create enemy
         if (GetRandomValue(0, 100) < 2) CreateEnemy(rectangles, screenWidth, screenHeight);
@@ -77,8 +67,23 @@ int main()
         for (size_t i = 0; i < rectangles.size(); i++)
         {
             rectangles[i].y += 5;
+            
+            // move the enemy towards the player direction once and keep it moving that direction
+            Vector2 direction = { square.x - rectangles[i].x, square.y - rectangles[i].y };
+            direction = Vector2Normalize(direction);
+            // if enemy is below the player, dont move it towards the player
+            if (rectangles[i].y > square.y)
+            {
+                rectangles[i].x += 0;
+                 //increase speed
+                rectangles[i].y += 10;
+            }
+            else rectangles[i].x += direction.x * 5;
+
+            
+
             DrawRectangleRec(rectangles[i], BLUE);
-            if (rectangles[i].y > screenHeight)
+            if (rectangles[i].y > screenHeight || rectangles[i].x > screenWidth || rectangles[i].x < 0)
             {
                 rectangles.erase(rectangles.begin() + i);
                 i--;
@@ -91,6 +96,7 @@ int main()
             DrawRectangleRec(projectile, RED);
         }
         
+
         // collision detection
         for (size_t i = 0; i < rectangles.size(); i++)
         {
@@ -124,13 +130,6 @@ int main()
         if (gameover)
         {
             DrawText("Game Over", screenWidth / 2 - 50, screenHeight / 2, 20, WHITE);
-            //wait for 3 seconds
-            for (int i = 0; i < 180; i++)
-            {
-                if (IsKeyPressed(KEY_ENTER)) break;
-                BeginDrawing();
-                EndDrawing();
-            }
             break;
         }
     }

@@ -24,7 +24,7 @@ copy_assets(${CMAKE_CURRENT_BINARY_DIR}
     )
 
 # Add the main executable
-add_executable(PlaneFightersRemake main.cpp)
+add_executable(PlaneFightersRemake main.cpp functions.cpp)
 
 # Link Raylib to the project
 target_link_libraries(PlaneFightersRemake raylib)
